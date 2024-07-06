@@ -3,6 +3,11 @@ name = "in-out-telegram-bot"
 main = "src/index.ts"
 compatibility_date = "2024-07-01"
 compatibility_flags = ["nodejs_compat"]
+send_metrics = false
+
+[[kv_namespaces]]
+binding = "telegram_in_out"
+id = "f77e8fde5a6f435bb6c8ad378885c361"
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure
@@ -64,12 +69,6 @@ compatibility_flags = ["nodejs_compat"]
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#hyperdrive
 # [[hyperdrive]]
 # binding = "MY_HYPERDRIVE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-
-# Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
-# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#kv-namespaces
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Bind an mTLS certificate. Use to present a client certificate when communicating with another service.
