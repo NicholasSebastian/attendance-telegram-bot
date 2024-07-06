@@ -1,13 +1,4 @@
-const TELEGRAM_API = "https://api.telegram.org";
-
-// NOTE: Send this POST request manually to set the target URL.
-// https://api.telegram.org/bot7257452888:AAHuuT8dZzBSqyKlghzxmmr8W0O486-tAAw/setWebhook
-
-// Production with CF: 
-// { url: "https://in-out-psg.workers.dev" }
-
-// Development with ngrok: 
-// { url: "https://bd20-167-179-40-197.ngrok-free.app/" }
+export const TELEGRAM_API = "https://api.telegram.org";
 
 export function sendMessage(env: Env, chatId: number, text: string) {
 	const token = env.TELEGRAM_BOT_TOKEN;

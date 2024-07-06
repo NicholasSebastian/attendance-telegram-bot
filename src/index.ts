@@ -3,6 +3,7 @@ import handlePost from "./handle-post";
 
 export const OK = new Response(undefined, { status: 200 });
 export const BAD_REQUEST = new Response(undefined, { status: 400 });
+export const SERVER_ERROR = new Response(undefined, { status: 500 });
 
 export default {
 	async fetch(request, env, _): Promise<Response> {
