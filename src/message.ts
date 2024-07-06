@@ -1,4 +1,4 @@
-export const MAX_TIME_OUT = 0.5 * 60; // 5 minutes.
+export const MAX_TIME_OUT = 5 * 60; // 5 minutes.
 
 export function formatMessage(username: string, timeIn: number, timeOut: number) {
 	const lateBy = (timeIn - timeOut) - MAX_TIME_OUT;
