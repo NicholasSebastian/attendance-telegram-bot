@@ -1,5 +1,6 @@
 import { BAD_REQUEST } from "./index";
 import { getEntries } from "./data";
+import { fmtTimestr } from "./utils";
 
 export default async function(request: Request, env: Env) {
     const path = new URL(request.url).pathname;
@@ -58,7 +59,7 @@ async function renderTable(env: Env) {
     for await (const [username, unix] of getEntries(env)) {
         const col0 = "<td>" + i++ + "</td>";
         const col1 = "<td>" + username + "</td>";
-        const col2 = "<td>" + new Date(unix * 1000).toLocaleTimeString() + "</td>";
+        const col2 = "<td>" + fmtTimestr(unix) + "</td>";
         tableHtml += "<tr>" + col0 + col1 + col2 + "</tr>";
     }
     if (!tableHtml) return "<div style='text-align: center'>Kosong</div>";

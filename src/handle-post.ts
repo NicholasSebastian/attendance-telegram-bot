@@ -1,5 +1,5 @@
 import { getEntry, saveEntry, deleteEntry } from "./data";
-import { fmtDuration, getFirstWord } from "./utils";
+import { fmtDuration, getFirstWord, fmtTimestr } from "./utils";
 import { sendMessage } from "./message";
 import { OK } from "./index";
 
@@ -28,8 +28,8 @@ export default async function(env: Env, payload: Message) {
             const duration = now - prevTime;
             if (duration < MAX_TIME_OUT) return OK;
 
-            const outstr = "Out: " + new Date(prevTime * 1000).toLocaleTimeString();
-            const instr = "In: " + new Date(now * 1000).toLocaleTimeString();
+            const outstr = "Out: " + fmtTimestr(prevTime);
+            const instr = "In: " + fmtTimestr(now);
             const latestr = "Telat: " + fmtDuration(duration - MAX_TIME_OUT);
             const message = [username, outstr, instr, latestr].join('\n');
 
