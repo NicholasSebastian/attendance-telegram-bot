@@ -1,19 +1,21 @@
-export const MAX_TIME_OUT = 5 * 60; // 5 minutes.
+const TELEGRAM_API = "https://api.telegram.org";
 
-export function formatMessage(username: string, timeIn: number, timeOut: number) {
-	const lateBy = (timeIn - timeOut) - MAX_TIME_OUT;
-	const lateByStr = formatDuration(lateBy);
-	const timeOutStr = new Date(timeOut).toLocaleTimeString();
-	const timeInStr = new Date(timeIn).toLocaleTimeString();
+// NOTE: Send this POST request manually to set the target URL.
+// https://api.telegram.org/bot7257452888:AAHuuT8dZzBSqyKlghzxmmr8W0O486-tAAw/setWebhook
 
-	return `@${username}\nOut jam ${timeOutStr}\nIn jam ${timeInStr}\nTelat ${lateByStr}`;
-}
+// Production with CF: 
+// { url: "https://in-out-psg.workers.dev" }
 
-function formatDuration(duration: number) {
-    let str = "";
-    if (duration > 59) {
-        str += Math.floor(duration / 60) + " menit ";
-    }
-    str += duration % 60 + " detik";
-    return str;
+// Development with ngrok: 
+// { url: "https://bd20-167-179-40-197.ngrok-free.app/" }
+
+export function sendMessage(env: Env, chatId: number, text: string) {
+	const token = env.TELEGRAM_BOT_TOKEN;
+	const url = `${TELEGRAM_API}/bot${token}/sendMessage`;
+
+	return fetch(url, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ chat_id: chatId, text })
+	});
 }
