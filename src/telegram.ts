@@ -1,18 +1,19 @@
-import { fmtJsonResponse } from "./utils";
-
 const TELEGRAM_API = "https://api.telegram.org";
+
+interface TelegramResponse extends Record<string, any> {
+    ok: boolean
+}
 
 async function execute(method: string, params: any, token: string) {
     const url = `${TELEGRAM_API}/bot${token}/${method}`;
-	console.log(url, params); // For debugging.
-
     const response = await fetch(url, { 
-        method: "POST", 
+        method: "POST",
         headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify(params) 
+        body: JSON.stringify(params)
     });
 
-    return fmtJsonResponse(response, { method });
+    if (!response.ok) return { ok: false } as TelegramResponse;
+    return response.json<TelegramResponse>();
 }
 
 export function initTelegramWebhook(env: Env, url: string) {
@@ -32,8 +33,4 @@ export async function defineCommands(env: Env, commands: Array<Command>) {
 export function sendMessage(env: Env, chatId: number, text: string) {
     const token = env.TELEGRAM_BOT_TOKEN;
 	return execute("sendMessage", { chat_id: chatId, text }, token);
-}
-
-export interface TelegramResponse extends Record<string, any> {
-    ok: boolean
 }

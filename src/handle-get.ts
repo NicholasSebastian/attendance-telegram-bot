@@ -1,5 +1,5 @@
 import { BAD_REQUEST } from "./index";
-import { renderTable, fmtContent } from "./page";
+import { renderTable, fmtHtmlResponse } from "./page";
 import { initTelegramWebhook, defineCommands } from "./telegram";
 
 // NOTE:
@@ -11,21 +11,30 @@ export default async function(request: Request, env: Env) {
     switch (pathname) {
     case "/": {
         const table = await renderTable(env);
-        const content = fmtContent(table);
-        const headers = { "Content-Type": "text/html" };
-        return new Response(content, { headers });
+        return fmtHtmlResponse(`
+            <h1>List Staff yang lagi Out</h1>
+            ${table}
+            <button onclick="window.location.reload()">Refresh (kadang ada delay)</button>
+        `);
     }
     case "/setup": {
         const response1 = await initTelegramWebhook(env, origin);
-        if (!response1.ok) return Response.json(response1);
+        if (!response1.ok) return fmtHtmlResponse(`
+            <h4>Error setting up Telegram webhook</h4>
+            <pre>${JSON.stringify(response1, null, 2)}</pre>
+        `);
 
-        const commands: Array<Command> = [
+        const response2 = await defineCommands(env, [
             { command: "in", description: "Lapor masuk kantor." },
 			{ command: "out", description: "Lapor keluar kantor." }
-        ];
-
-        const response2 = await defineCommands(env, commands);
-        return Response.json([response1, response2]);
+        ]);
+        
+        return fmtHtmlResponse(`
+            <h4>Telegram webhook setup successfully</h4>
+            <pre>${JSON.stringify(response1, null, 2)}</pre>
+            <h4>${response2.ok ? "Commands set successfully" : "Error setting Commands"}</h4>
+            <pre>${JSON.stringify(response2, null, 2)}</pre>
+        `);
     }}
     return BAD_REQUEST;
 }

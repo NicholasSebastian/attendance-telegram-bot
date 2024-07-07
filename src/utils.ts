@@ -1,4 +1,12 @@
-import { TelegramResponse } from "./telegram";
+export function parseCommand(message: Message) {
+    const { text, entities } = message;
+    const entity = entities.find(entity => entity.type === "bot_command");
+    if (!entity) return null;
+
+    const part = text.substr(entity.offset, entity.length);
+    const tagIndex = part.indexOf('@');
+    return tagIndex > 0 ? part.substring(0, tagIndex) : part;
+}
 
 export function safeParseInt(str: string | null) {
     if (!str) return null;
@@ -23,12 +31,4 @@ export function fmtTimestr(seconds: number) {
     const date = new Date(seconds * 1000);
     const timeZone = "Asia/Jakarta";
     return date.toLocaleTimeString("en-US", { timeZone });
-}
-
-export async function fmtJsonResponse(response: globalThis.Response, metadata?: Record<string, any>): Promise<TelegramResponse> {
-    if (response.ok) {
-        const data = await response.json() satisfies TelegramResponse;
-        return { ...data, ...metadata };
-    }
-    return { ok: false, error_code: response.status, ...metadata };
 }

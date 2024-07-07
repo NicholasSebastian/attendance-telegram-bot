@@ -11,7 +11,7 @@ export default {
 			return handleGet(request, env);
 			
 		case "POST":
-			const body = await request.json() as Update;
+			const body = await request.json<Update>();
 			if (body.message === undefined) break;
 			if (body.message.chat.type !== "group") break;
 			return handlePost(env, body.message);

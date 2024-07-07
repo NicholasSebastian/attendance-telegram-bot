@@ -16,6 +16,7 @@ declare type Message = {
     chat: Chat
     date: number
     text: string
+    entities: Array<Entity>
 }
 
 declare type User = {
@@ -30,4 +31,10 @@ declare type Chat = {
     title: string
     type: "private" | "group" | "supergroup" | "channel"
     [key: string]: false
+}
+
+declare type Entity = {
+    type: "bot_command" | string
+    offset: number
+    length: number
 }
