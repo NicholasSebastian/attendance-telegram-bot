@@ -1,5 +1,6 @@
 import handleGet from "./handle-get";
 import handlePost from "./handle-post";
+import { deleteEntry } from "./data";
 
 export const OK = new Response(undefined, { status: 200 });
 export const BAD_REQUEST = new Response(undefined, { status: 400 });
@@ -15,6 +16,12 @@ export default {
 			if (body.message === undefined) break;
 			if (body.message.chat.type !== "group") break;
 			return handlePost(env, body.message);
+
+		case "DELETE":
+			const key = new URL(request.url).searchParams.get("username");
+			if (!key) break;
+			await deleteEntry(env, key);
+			return OK;
 		}
 		return BAD_REQUEST;
 	}

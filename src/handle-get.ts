@@ -1,5 +1,5 @@
 import { BAD_REQUEST } from "./index";
-import { renderTable, fmtHtmlResponse } from "./page";
+import { TABLE_SCRIPTS, renderTable, fmtHtmlResponse } from "./page";
 import { initTelegramWebhook, defineCommands } from "./telegram";
 import { commands } from "./constants";
 
@@ -16,6 +16,7 @@ export default async function(request: Request, env: Env) {
             <h1>List Staff yang lagi Out</h1>
             ${table}
             <button onclick="window.location.reload()">Refresh (kadang ada delay)</button>
+            <script>${TABLE_SCRIPTS}</script>
         `);
     }
     case "/setup": {
