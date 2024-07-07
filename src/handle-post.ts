@@ -1,6 +1,6 @@
 import { getEntry, saveEntry, deleteEntry } from "./data";
-import { fmtDuration, getFirstWord, fmtTimestr } from "./utils";
-import { sendMessage } from "./message";
+import { fmtDuration, fmtTimestr } from "./utils";
+import { sendMessage } from "./telegram";
 import { OK } from "./index";
 
 // NOTE:
@@ -14,14 +14,12 @@ export default async function(env: Env, payload: Message) {
     try {
         const username = '@' + from.username;
         const prevTime = await getEntry(env, username);
-        const cmd = getFirstWord(text);
-    
-        switch (cmd) {
-        case "/out":
+
+        if (text.startsWith("/out")) {
             if (!prevTime) await saveEntry(env, username, now);
             return OK;
-
-        case "/in":
+        }
+        if (text.startsWith("/in")) {
             if (prevTime) await deleteEntry(env, username);
             else return OK;
 
@@ -35,11 +33,9 @@ export default async function(env: Env, payload: Message) {
 
             sendMessage(env, chat.id, message);
             return OK;
-
-        default:
-            sendMessage(env, chat.id, "Command tidak valid");
-            return OK;
         }
+        sendMessage(env, chat.id, "Command tidak valid");
+        return OK;
     }
     catch {
         sendMessage(env, chat.id, "Bot Error");

@@ -1,3 +1,8 @@
+declare type Command = {
+	command: string
+	description: string
+}
+
 declare type Update = {
     [key: string]: any
     update_id: number

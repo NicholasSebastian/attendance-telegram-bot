@@ -1,9 +1,4 @@
-
-export function getFirstWord(text: string) {
-    const separator = text.indexOf(' ');
-    if (separator > 0) return text.substring(0, separator);
-    return text;
-}
+import { TelegramResponse } from "./telegram";
 
 export function safeParseInt(str: string | null) {
     if (!str) return null;
@@ -28,4 +23,12 @@ export function fmtTimestr(seconds: number) {
     const date = new Date(seconds * 1000);
     const timeZone = "Asia/Jakarta";
     return date.toLocaleTimeString("en-US", { timeZone });
+}
+
+export async function fmtJsonResponse(response: globalThis.Response, metadata?: Record<string, any>): Promise<TelegramResponse> {
+    if (response.ok) {
+        const data = await response.json() satisfies TelegramResponse;
+        return { ...data, ...metadata };
+    }
+    return { ok: false, error_code: response.status, ...metadata };
 }

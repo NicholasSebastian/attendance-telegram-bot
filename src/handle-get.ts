@@ -1,6 +1,6 @@
-import { BAD_REQUEST, SERVER_ERROR } from "./index";
-import { TELEGRAM_API } from "./message";
+import { BAD_REQUEST } from "./index";
 import { renderTable, fmtContent } from "./page";
+import { initTelegramWebhook, defineCommands } from "./telegram";
 
 // NOTE:
 // Manually send a GET request to '/setup' once after deployment 
@@ -16,15 +16,16 @@ export default async function(request: Request, env: Env) {
         return new Response(content, { headers });
     }
     case "/setup": {
-        const url = `${TELEGRAM_API}/bot${env.TELEGRAM_BOT_TOKEN}/setWebhook`;
-        const headers = { "Content-Type": "application/json" };
-        const body = JSON.stringify({ url: origin });
+        const response1 = await initTelegramWebhook(env, origin);
+        if (!response1.ok) return Response.json(response1);
 
-        const response = await fetch(url, { method: "POST", headers, body });
-        if (!response.ok) SERVER_ERROR;
+        const commands: Array<Command> = [
+            { command: "in", description: "Lapor masuk kantor." },
+			{ command: "out", description: "Lapor keluar kantor." }
+        ];
 
-        const payload = await response.json<any>();
-        return new Response(payload, { headers, status: 200 });
+        const response2 = await defineCommands(env, commands);
+        return Response.json([response1, response2]);
     }}
     return BAD_REQUEST;
 }
