@@ -1,23 +1,29 @@
-import { safeParseInt } from "./utils";
+import { Reason } from "./constants";
 
-type KV = [string, number];
+interface Entry extends Record<string, any> {
+    name: string
+    out: number
+    type: Reason
+}
 
-export async function* getEntries(env: Env): AsyncGenerator<KV> {
+export async function* getEntries(env: Env): AsyncGenerator<Entry> {
     const results = await env.telegram_in_out.list();
     for (const key of results.keys) {
         const value = await env.telegram_in_out.get(key.name);
-        const numval = safeParseInt(value);
-        if (numval) yield [key.name, numval];
+        if (!value) continue;
+        yield { username: key.name, ...JSON.parse(value) };
     }
 }
 
-export async function getEntry(env: Env, key: string) {
+export async function getEntry(env: Env, key: string): Promise<Entry | null> {
     const entry = await env.telegram_in_out.get(key);
-    return safeParseInt(entry);
+    if (!entry) return null;
+    return JSON.parse(entry);
 }
 
-export function saveEntry(env: Env, key: string, value: number) {
-    return env.telegram_in_out.put(key, value.toString());
+export function saveEntry(env: Env, key: string, data: Entry) {
+    const str = JSON.stringify(data);
+    return env.telegram_in_out.put(key, str);
 }
 
 export function deleteEntry(env: Env, key: string) {

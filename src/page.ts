@@ -42,11 +42,13 @@ export function fmtHtmlResponse(html: string) {
 
 export async function renderTable(env: Env) {
     let tableHtml = "", i = 1;
-    for await (const [username, unix] of getEntries(env)) {
+    for await (const { username, name, out, type } of getEntries(env)) {
         const col0 = "<td>" + i++ + "</td>";
         const col1 = "<td>" + username + "</td>";
-        const col2 = "<td>" + fmtTimestr(unix) + "</td>";
-        tableHtml += "<tr>" + col0 + col1 + col2 + "</tr>";
+        const col2 = "<td>" + name + "</td>";
+        const col3 = "<td>" + fmtTimestr(out) + "</td>";
+        const col4 = "<td>" + type + "</td>";
+        tableHtml += "<tr>" + col0 + col1 + col2 + col3 + col4 + "</tr>";
     }
     if (!tableHtml) return "<div style='text-align: center'>Kosong</div>";
     return `
@@ -55,7 +57,9 @@ export async function renderTable(env: Env) {
             <tr>
                 <th>No.</th>
                 <th>User Telegram</th>
+                <th>Nama</th>
                 <th>Waktu Out</th>
+                <th>Alasan</th>
             </tr>
         </thead>
         <tbody>${tableHtml}</tbody>

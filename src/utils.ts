@@ -1,22 +1,3 @@
-export function parseCommand(message: Message) {
-    const { text, entities } = message;
-    const entity = entities.find(entity => entity.type === "bot_command");
-    if (!entity) return null;
-
-    const part = text.substr(entity.offset, entity.length);
-    const tagIndex = part.indexOf('@');
-    return tagIndex > 0 ? part.substring(0, tagIndex) : part;
-}
-
-export function safeParseInt(str: string | null) {
-    if (!str) return null;
-    try {
-        const num = parseInt(str);
-        return isNaN(num) ? null : num;
-    } catch {
-        return null;
-    }
-}
 
 export function fmtDuration(duration: number) {
     let str = "";

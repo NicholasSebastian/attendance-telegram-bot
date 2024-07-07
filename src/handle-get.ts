@@ -1,6 +1,7 @@
 import { BAD_REQUEST } from "./index";
 import { renderTable, fmtHtmlResponse } from "./page";
 import { initTelegramWebhook, defineCommands } from "./telegram";
+import { commands } from "./constants";
 
 // NOTE:
 // Manually send a GET request to '/setup' once after deployment 
@@ -24,11 +25,7 @@ export default async function(request: Request, env: Env) {
             <pre>${JSON.stringify(response1, null, 2)}</pre>
         `);
 
-        const response2 = await defineCommands(env, [
-            { command: "in", description: "Lapor masuk kantor." },
-			{ command: "out", description: "Lapor keluar kantor." }
-        ]);
-        
+        const response2 = await defineCommands(env, commands);
         return fmtHtmlResponse(`
             <h4>Telegram webhook setup successfully</h4>
             <pre>${JSON.stringify(response1, null, 2)}</pre>
